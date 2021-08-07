@@ -1,0 +1,42 @@
+{
+  "name": "segmint",
+  "version": "1.0.0",
+  "description": "Effortless + refreshing calculations for proportional and cyclic and values",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/slurmulon/segmint.git"
+  },
+  "keywords": [
+    "segment",
+    "fraction",
+    "ratio",
+    "proportion",
+    "ratio",
+    "lerp",
+    "interpolate",
+    "quantize",
+    "cycle",
+    "cyclic",
+    "units",
+    "convert",
+    "conversion",
+    "math",
+    "calculate"
+  ],
+  "author": "Erik Vavro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/slurmulon/segmint/issues"
+  },
+  "homepage": "https://github.com/slurmulon/segmint#readme",
+  "dependencies": {
+    "memoizee": "^0.4.15"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6"
+  }
+}
