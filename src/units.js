@@ -1,4 +1,4 @@
-import { gcd, clamp, lerp } from './math'
+import { gcd, clamp, lerp, invlerp } from './math'
 import memoize from 'memoizee'
 
 export class Units {
@@ -55,10 +55,12 @@ export class Units {
     return value / (this.map[as] / this.map[is])
   }
 
-  snap (value, { to = this.lens.unit, calc = Math.floor } = {}) {
-    const apply = typeof calc === 'function' ? calc : _ => _
+  snap (value, { unit = this.lens.unit, calc = Math.floor } = {}) {
+    const to = typeof unit === 'string' ? this.map[unit] : unit
+    const adjust = typeof calc === 'function' ? calc : _ => _
+    const snapped = adjust(value / to) * to
 
-    return apply(value / to) * to
+    return snapped || 0
   }
 
   clamp (value, lens) {
@@ -74,9 +76,9 @@ export class Units {
     return key % tail
   }
 
-  lerp (ratio, { is = this.lens.unit, min = this.lens.min, max = this.lens.max } = {}) {
-    const head = this.cast(min || 0, { is, as: this.base })
-    const tail = this.cast(max || 0, { is, as: this.base })
+  lerp (ratio, { is = this.lens.unit, as = this.lens.unit, min = this.lens.min, max = this.lens.max } = {}) {
+    const head = this.cast(min || 0, { is, as })
+    const tail = this.cast(max || 0, { is, as })
 
     return lerp(ratio, head, tail)
   }
@@ -84,7 +86,7 @@ export class Units {
   invlerp (value, lens) {
     const { index, head, tail } = this.scope(value, lens)
 
-    return invlerp(ratio, head, tail)
+    return invlerp(index, head, tail)
   }
 
   delta (value, lens) {
@@ -94,7 +96,7 @@ export class Units {
   }
 
   range (value, lens) {
-    const { index, head, tail } = this.scope(value, lens)
+    const { head, tail } = this.scope(value, lens)
 
     return tail - head
   }
@@ -117,11 +119,11 @@ export class Units {
   wrap (value, grid = this.grid, lens = this.lens) {
     const basis = gcd(value, grid)
     const size = this.clamp(value, lens)
-    const container = this.snap(size, basis)
+    const container = this.snap(size, { unit: basis })
     const ratio = Math.max(1, Math.min(value / basis, grid))
     const min = value >= grid ? grid : basis
 
-    return Math.max(min, this.snap(container, ratio))
+    return Math.max(min, this.snap(container, { unit: ratio }))
   }
 
   // Changes the base unit to the provided key by recalculating and replacing the unit map pairs.
@@ -149,12 +151,28 @@ export class Units {
 
 export const units = memoize(props => new Units(props))
 
-export const BYTE_UNIT_LENS = Object.freeze({
-  unit: 'byte',
+export const UNIT_LENS = Object.freeze({
   origin: 0,
   grid: 1,
   min: 0,
   max: Number.MAX_SAFE_INTEGER
+})
+
+export const BYTE_UNIT_LENS = Object.freeze({ unit: 'byte', ...UNIT_LENS })
+
+export const BYTE_UNIT_MAP = Object.freeze({
+  // base: 1, // byte
+  byte: 1,
+  bit: 1/8,
+  kb: Math.pow(10, 3),
+  mb: Math.pow(10, 6),
+  gb: Math.pow(10, 9),
+  tb: Math.pow(10, 12),
+  pb: Math.pow(10, 15),
+  kib: Math.pow(2, 10),
+  mib: Math.pow(2, 20),
+  gib: Math.pow(2, 30),
+  tib: Math.pow(2, 40)
 })
 
 export const LENGTH_UNIT_MAP = Object.freeze({
@@ -172,19 +190,5 @@ export const LENGTH_UNIT_MAP = Object.freeze({
   mile: 5280 * 12,
 })
 
-export const BYTE_UNIT_MAP = Object.freeze({
-  // base: 1, // byte
-  byte: 1,
-  bit: 1/8,
-  kb: Math.pow(10, 3),
-  mb: Math.pow(10, 6),
-  gb: Math.pow(10, 9),
-  tb: Math.pow(10, 12),
-  pb: Math.pow(10, 15),
-  kib: Math.pow(2, 10),
-  mib: Math.pow(2, 20),
-  gib: Math.pow(2, 30),
-  tib: Math.pow(2, 40)
-})
 
 export default Units

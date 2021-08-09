@@ -2,13 +2,12 @@
 // export class Item {
 export class Section {
 
-  constructor ({ index, value, lens, edge, units } = {}) {
+  constructor ({ index, value, lens, grid, units } = {}) {
     this.index = index
     this.value = value
     // this.shape = shape
     this.lens = lens
-    // TODO: Rename to grid
-    this.edge = edge
+    this.grid = grid
     this.units = units
   }
 
@@ -26,7 +25,7 @@ export class Section {
   }
 
   get size () {
-    return this.units.wrap(this.value, this.edge || this.tail)
+    return this.units.wrap(this.value, this.grid || this.tail)
   }
 
   get loops () {
