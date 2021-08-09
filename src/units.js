@@ -9,6 +9,7 @@ export class Units {
   } = {}) {
     this.map = map
     this.lens = lens
+    // this.lens = Object.assign({}, UNIT_LENS, lens)
   }
 
   scope (value, {
@@ -18,7 +19,7 @@ export class Units {
     max = this.lens.max,
     origin = this.lens.origin
   } = {}) {
-    const index = this.cast(value - origin, { is, as })
+    const index = this.cast(value - (origin || 0), { is, as })
     const head = this.cast(min || 0, { is, as })
     const tail = this.cast(max || value, { is, as })
 
@@ -101,8 +102,8 @@ export class Units {
     return delta / range
   }
 
-  // wrap (value, grid = this.grid, lens = this.lens) {
-  wrap (value, grid = 1, lens = this.lens) {
+  wrap (value, lens = this.lens) {
+    const grid = lens.grid || 1
     const basis = gcd(value, grid)
     const size = this.clamp(value, lens)
     const container = this.snap(size, { to: basis })
@@ -147,7 +148,6 @@ export const UNIT_LENS = Object.freeze({
 export const BYTE_UNIT_LENS = Object.freeze({ unit: 'byte', ...UNIT_LENS })
 
 export const BYTE_UNIT_MAP = Object.freeze({
-  // base: 1, // byte
   byte: 1,
   bit: 1/8,
   kb: Math.pow(10, 3),
