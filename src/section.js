@@ -1,4 +1,5 @@
 // Wraps (or can be composed) with a generic object (in our case, a beat) and provides useful calculations for cursor or time-based contexts.
+// TODO: Keep out of this lib and use elsewhere, not crucial or highly useful at this scope
 // export class Item {
 export class Section {
 
@@ -25,7 +26,7 @@ export class Section {
   }
 
   get size () {
-    return this.units.wrap(this.value, this.grid || this.tail)
+    return this.units.wrap(this.value, this.grid || this.tail, this.lens)
   }
 
   get loops () {
@@ -38,7 +39,9 @@ export class Section {
     return this.units.cast(this.size, this.lens)
   }
 
-  cyclic (index = this.index, length = this.length) {
+  // TODO: Use units.cyclic instead
+  // cyclic (index = this.index, length = this.length) {
+  cyclic (index = this.index, length = this.size) {
     return Math.max(0, index - this.head) % length
   }
 

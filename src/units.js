@@ -5,37 +5,11 @@ export class Units {
 
   constructor ({
     map = BYTE_UNIT_MAP,
-    lens = BYTE_UNIT_LENS,
-    // basis
-    // base = 'base',
-    // scale = 1,
-    // origin = 0,
-    // min = 0,
-    // max = 100
-    // max = Number.MAX_SAFE_INTEGER / 2
-    // max = Number.MAX_SAFE_INTEGER
+    lens = BYTE_UNIT_LENS
   } = {}) {
     this.map = map
     this.lens = lens
-    // this.base = base
-    // // this.scale = scale
-    // this.grid = grid
-    // this.origin = origin
-    // this.min = min
-    // this.max = max
   }
-
-  // get defaults () {
-    // return {
-    //   base: 'step'
-    //   scale: 1,
-    //   origin: 0,
-    //   min: 0,
-    //   max: 100
-    // }
-  // }
-
-  // assign (map)
 
   scope (value, {
     is = this.lens.unit,
@@ -51,14 +25,28 @@ export class Units {
     return { value, index, head, tail }
   }
 
-  cast (value, { is = this.lens.unit, as = this.lens.unit } = {}) {
-    return value / (this.map[as] / this.map[is])
+  normalize (unit) {
+    if (typeof unit === 'number') {
+      return unit
+    }
+
+    if (typeof unit === 'string') {
+      const value = this.map[unit] || 1
+
+      return typeof value === 'function' ? value(unit) : Number(value)
+    }
+
+    return 1
   }
 
-  snap (value, { unit = this.lens.unit, calc = Math.floor } = {}) {
-    const to = typeof unit === 'string' ? this.map[unit] : unit
+  cast (value, { is = this.lens.unit, as = this.lens.unit } = {}) {
+    return this.normalize(value) / (this.normalize(as) / this.normalize(is))
+  }
+
+  snap (value, { to = this.lens.unit, calc = Math.floor } = {}) {
+    const unit = this.normalize(to)
     const adjust = typeof calc === 'function' ? calc : _ => _
-    const snapped = adjust(value / to) * to
+    const snapped = adjust(value / unit) * unit
 
     return snapped || 0
   }
@@ -76,9 +64,8 @@ export class Units {
     return key % tail
   }
 
-  lerp (ratio, { is = this.lens.unit, as = this.lens.unit, min = this.lens.min, max = this.lens.max } = {}) {
-    const head = this.cast(min || 0, { is, as })
-    const tail = this.cast(max || 0, { is, as })
+  lerp (ratio, lens) {
+    const { head, tail } = this.scope(0, lens)
 
     return lerp(ratio, head, tail)
   }
@@ -114,16 +101,15 @@ export class Units {
     return delta / range
   }
 
-  // TODO: Rename `edge` and/or `scale` to `grid`
-  // wrap (value, edge = this.scale, lens) {
-  wrap (value, grid = this.grid, lens = this.lens) {
+  // wrap (value, grid = this.grid, lens = this.lens) {
+  wrap (value, grid = 1, lens = this.lens) {
     const basis = gcd(value, grid)
     const size = this.clamp(value, lens)
-    const container = this.snap(size, { unit: basis })
+    const container = this.snap(size, { to: basis })
     const ratio = Math.max(1, Math.min(value / basis, grid))
     const min = value >= grid ? grid : basis
 
-    return Math.max(min, this.snap(container, { unit: ratio }))
+    return Math.max(min, this.snap(container, { to: ratio }))
   }
 
   // Changes the base unit to the provided key by recalculating and replacing the unit map pairs.
