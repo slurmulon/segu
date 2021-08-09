@@ -7,6 +7,7 @@ export class Section {
     this.value = value
     // this.shape = shape
     this.lens = lens
+    // TODO: Rename to grid
     this.edge = edge
     this.units = units
   }
@@ -63,8 +64,8 @@ export class Section {
   // eventual
   // incoming
   awaits (index = this.index, cursor = this.index) {
-    const current = Math.floor(cursor)
-    const loop = Math.floor((current - this.head) / this.length)
+    const span = Math.floor(cursor) - this.head
+    const loop = Math.floor(span / this.length)
 
     return this.cursor(index, loop) < this.tail
 

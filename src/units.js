@@ -4,22 +4,32 @@ import memoize from 'memoizee'
 export class Units {
 
   constructor ({
-    map = {},
+    map = BYTE_UNIT_MAP,
     // basis
-    base = 'step',
+    base = 'base',
     scale = 1,
     origin = 0,
     min = 0,
-    max = 100
-    // max = Number.MAX_SAFE_INTEGER
+    // max = 100
+    max = Number.MAX_SAFE_INTEGER / 2
   } = {}) {
     this.map = map
     this.base = base
     this.scale = scale
     this.origin = origin
-    this.min = max
+    this.min = min
     this.max = max
   }
+
+  // get defaults () {
+    // return {
+    //   base: 'step'
+    //   scale: 1,
+    //   origin: 0,
+    //   min: 0,
+    //   max: 100
+    // }
+  // }
 
   // assign (map)
 
@@ -98,6 +108,7 @@ export class Units {
     return delta / range
   }
 
+  // TODO: Rename `edge` and/or `scale` to `grid`
   wrap (value, edge = this.scale, lens) {
     const basis = gcd(value, edge)
     const size = this.clamp(value, lens)
@@ -132,5 +143,32 @@ export class Units {
 }
 
 export const units = memoize(props => new Units(props))
+
+export const LENGTH_UNIT_MAP = Object.freeze({
+  base: 1,
+  inch: 1,
+  px: 1/96, // pixels
+  pt: 1/72, // points
+  pc: 1/16, // picas
+  cm: 2.54, // centimeter
+  meter: 0.0254,
+  feet: 12,
+  yard: 3 * 12,
+  fathom: 6 * 12,
+  furlong: 660 * 12,
+  mile: 5280 * 12,
+})
+
+export const BYTE_UNIT_MAP = Object.freeze({
+  base: 1, // byte
+  byte: 1,
+  bit: 1/8,
+  kb: 1000,
+  mb: Math.pow(10, 6),
+  gb: Math.pow(1000, 3),
+  kib: Math.pow(2, 10),
+  mib: Math.pow(2, 20),
+  gib: Math.pow(1024, 3)
+})
 
 export default Units
