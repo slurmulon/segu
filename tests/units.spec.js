@@ -260,14 +260,13 @@ describe('progress', () => {
 describe('wrap', () => {
   describe('clamps and snaps values around a grid unit', () => {
     it('snaps to ratio of value when less than max', () => {
-      const result = units.wrap(10, 8, { max: 12 })
+      const result = units.wrap(10, { grid: 8, max: 12 })
 
       expect(result).toBe(10)
     })
 
     it('snaps to ratio of grid when value exceeds max', () => {
-      // const result = units.wrap(14, 8, { max: 16 })
-      const result = units.wrap(14, 8, { max: 12 })
+      const result = units.wrap(14, { grid: 8, max: 12 })
 
       expect(result).toBe(8)
     })
