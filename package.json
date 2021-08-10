@@ -1,7 +1,7 @@
 {
-  "name": "segmint",
+  "name": "segu",
   "version": "1.0.0",
-  "description": "Effortless + refreshing calculations for proportional and cyclic and values",
+  "description": "Simplified linear unit conversions and transforms",
   "main": "src/index.js",
   "scripts": {
     "build": "rollup -c",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/slurmulon/segmint.git"
+    "url": "git+https://github.com/slurmulon/segu.git"
   },
   "keywords": [
     "segment",
