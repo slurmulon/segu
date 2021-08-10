@@ -1,5 +1,4 @@
 import { gcd, clamp, lerp, invlerp } from './math'
-import memoize from 'memoizee'
 
 export class Units {
 
@@ -47,9 +46,10 @@ export class Units {
   snap (value, { to = this.lens.unit, calc = Math.floor } = {}) {
     const unit = this.normalize(to)
     const adjust = typeof calc === 'function' ? calc : _ => _
-    const snapped = adjust(value / unit) * unit
+    const output = adjust(value / unit) * unit
 
-    return snapped || 0
+    return this.normalize(output || 0)
+    // return adjust(output || 0)
   }
 
   clamp (value, lens) {
@@ -102,7 +102,7 @@ export class Units {
     return delta / range
   }
 
-  wrap (value, lens = this.lens) {
+  fold (value, lens = this.lens) {
     const grid = lens.grid || 1
     const basis = gcd(value, grid)
     const size = this.clamp(value, lens)
@@ -129,6 +129,13 @@ export class Units {
     return this
   }
 
+  clone (props) {
+    const map = Object.assign({}, this.map, props.map)
+    const lens = Object.assign({}, this.lens, props.lens)
+
+    return new Units({ map, lens })
+  }
+
   // quantize
   //
   static use (props) {
@@ -136,7 +143,7 @@ export class Units {
   }
 }
 
-export const units = memoize(props => new Units(props))
+export const units = props => new Units(props)
 
 export const UNIT_LENS = Object.freeze({
   origin: 0,
@@ -162,13 +169,12 @@ export const BYTE_UNIT_MAP = Object.freeze({
 })
 
 export const LENGTH_UNIT_MAP = Object.freeze({
-  // base: 1,
   inch: 1,
   px: 1/96, // pixels
   pt: 1/72, // points
   pc: 1/16, // picas
   cm: 2.54, // centimeter
-  meter: 0.0254,
+  meter: 39.3701,
   feet: 12,
   yard: 3 * 12,
   fathom: 6 * 12,

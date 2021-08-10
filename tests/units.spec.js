@@ -254,19 +254,31 @@ describe('ratio', () => {
 })
 
 describe('progress', () => {
+  describe('provides the progress of a value within a range', () => {
+    it('within range', () => {
+      const result = units.progress(6, { min: 2, max: 8 })
 
+      expect(result).toBe(2/3)
+    })
+
+    it('outside range', () => {
+      const result = units.progress(23, { min: 2, max: 8 })
+
+      expect(result).toBe(3.5)
+    })
+  })
 })
 
-describe('wrap', () => {
+describe('fold', () => {
   describe('clamps and snaps values around a grid unit', () => {
     it('snaps to ratio of value when less than max', () => {
-      const result = units.wrap(10, { grid: 8, max: 12 })
+      const result = units.fold(10, { grid: 8, max: 12 })
 
       expect(result).toBe(10)
     })
 
     it('snaps to ratio of grid when value exceeds max', () => {
-      const result = units.wrap(14, { grid: 8, max: 12 })
+      const result = units.fold(14, { grid: 8, max: 12 })
 
       expect(result).toBe(8)
     })
