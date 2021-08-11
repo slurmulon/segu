@@ -25,20 +25,20 @@ export class Units {
     return 1
   }
 
-  scope (value, lens = this.lens) {
+  scope (value = 1, lens = this.lens) {
     const { is, as, min, max, origin } = this.lens.use(lens)
-    const index = this.cast(value - (origin || 0), { is, as })
+    const index = this.cast(value - origin, { is, as })
     const head = this.cast(min || 0, { is, as })
     const tail = this.cast(max || value, { is, as })
 
     return { value, index, head, tail }
   }
 
-  cast (value, { is = this.lens.unit, as = this.lens.unit } = {}) {
+  cast (value = 1, { is = this.lens.unit, as = this.lens.unit } = {}) {
     return this.normalize(value) / (this.normalize(as) / this.normalize(is))
   }
 
-  snap (value, { to = this.lens.unit, calc = Math.floor } = {}) {
+  snap (value = 1, { to = this.lens.unit, calc = Math.floor } = {}) {
     const unit = this.normalize(to)
     const adjust = typeof calc === 'function' ? calc : _ => _
     const output = adjust(value / unit) * unit
@@ -80,12 +80,6 @@ export class Units {
     const { head, tail } = this.scope(value, lens)
 
     return tail - head
-  }
-
-  ratio (value, lens) {
-    const { index, tail } = this.scope(duration, lens)
-
-    return index / tail
   }
 
   progress (value, lens) {

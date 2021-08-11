@@ -250,10 +250,6 @@ describe('range', () => {
 
 })
 
-describe('ratio', () => {
-
-})
-
 describe('progress', () => {
   describe('provides the progress of a value within a range', () => {
     it('within range', () => {
