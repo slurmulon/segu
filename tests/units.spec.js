@@ -1,6 +1,7 @@
 import { Units } from '../src/units'
+import bytes from '../src/data/bytes'
 
-const units = new Units()
+const units = new Units(bytes)
 
 describe('constructor', () => {
 

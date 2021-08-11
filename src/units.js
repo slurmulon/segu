@@ -1,11 +1,11 @@
 import { Lens } from './lens'
-import { gcd, clamp, lerp, invlerp } from './math'
+import { gcd, cyclic, clamp, lerp, invlerp } from './math'
 
 export class Units {
 
   constructor ({
-    map = BYTE_UNIT_MAP,
-    lens = BYTE_UNIT_LENS
+    map = {},
+    lens = {}
   } = {}) {
     this.map = map
     this.lens = new Lens(lens)
@@ -25,8 +25,7 @@ export class Units {
     return 1
   }
 
-  scope (value, lens) {
-    // const { is, as, min, max, origin } = lens
+  scope (value, lens = this.lens) {
     const { is, as, min, max, origin } = this.lens.use(lens)
     const index = this.cast(value - (origin || 0), { is, as })
     const head = this.cast(min || 0, { is, as })
@@ -45,7 +44,6 @@ export class Units {
     const output = adjust(value / unit) * unit
 
     return this.normalize(output || 0)
-    // return adjust(output || 0)
   }
 
   clamp (value, lens) {
@@ -55,10 +53,9 @@ export class Units {
   }
 
   cyclic (value, lens) {
-    const { index, total, head, tail } = this.scope(value, lens)
-    const key = index >= head ? index : index + tail
+    const { index, head, tail } = this.scope(value, lens)
 
-    return key % tail
+    return cyclic(index, head, tail)
   }
 
   lerp (ratio, lens) {
@@ -132,51 +129,11 @@ export class Units {
     return new Units({ map, lens })
   }
 
-  // quantize
-  //
   static use (props) {
     return new Units(props)
   }
 }
 
 export const units = props => new Units(props)
-
-export const UNIT_LENS = Object.freeze({
-  origin: 0,
-  grid: 1,
-  min: 0,
-  max: Number.MAX_SAFE_INTEGER
-})
-
-export const BYTE_UNIT_LENS = Object.freeze({ unit: 'byte', ...UNIT_LENS })
-
-export const BYTE_UNIT_MAP = Object.freeze({
-  byte: 1,
-  bit: 1/8,
-  kb: Math.pow(10, 3),
-  mb: Math.pow(10, 6),
-  gb: Math.pow(10, 9),
-  tb: Math.pow(10, 12),
-  pb: Math.pow(10, 15),
-  kib: Math.pow(2, 10),
-  mib: Math.pow(2, 20),
-  gib: Math.pow(2, 30),
-  tib: Math.pow(2, 40)
-})
-
-export const LENGTH_UNIT_MAP = Object.freeze({
-  inch: 1,
-  px: 1/96, // pixels
-  pt: 1/72, // points
-  pc: 1/16, // picas
-  cm: 2.54, // centimeter
-  meter: 39.3701,
-  feet: 12,
-  yard: 3 * 12,
-  fathom: 6 * 12,
-  furlong: 660 * 12,
-  mile: 5280 * 12,
-})
-
 
 export default Units
