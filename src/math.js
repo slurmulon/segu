@@ -51,6 +51,18 @@ export function invlerp (value, x, y) {
 }
 
 /**
+ * Cycles a value around an range (from x to y).
+ *
+ * @param {Number} value
+ * @param {Number} x
+ * @param {Number} y
+ * @returns {Number}
+*/
+export function cyclic (value, x, y) {
+  return (value >= x ? value : value + y) % y
+}
+
+/**
  * Determines the element found in an array at a given ratio
  *
  * @param {Float} ratio
