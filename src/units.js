@@ -35,6 +35,7 @@ export class Units {
   }
 
   cast (value = 1, { is = this.lens.unit, as = this.lens.unit } = {}) {
+  // cast (value = 1, { is = this.lens.is, as = this.lens.as } = {}) {
     return this.normalize(value) / (this.normalize(as) / this.normalize(is))
   }
 

@@ -10,10 +10,13 @@ export class Lens {
     origin = 0
   } = {}) {
     this.data = { unit, is, as, min, max, grid, origin }
+    // Would improve flexibility by wrapping all getters in Lens with this, allowing Units and Lens to use the same normalization function
+    // this.normalize = normalize || Units.normalize
   }
 
   get unit () {
-    return this.data.unit || 1
+    // return this.data.unit || 1
+    return this.data.unit || this.data.is || 1
   }
 
   get is () {
@@ -29,7 +32,7 @@ export class Lens {
   }
 
   get max () {
-    return this.data.max // || Number.MAX_SAFE_INTEGER
+    return this.data.max || Number.MAX_SAFE_INTEGER
   }
 
   get grid () {
@@ -42,6 +45,12 @@ export class Lens {
 
   use (data) {
     return Object.assign({}, this.data, data)
+  }
+
+  assign (data) {
+    this.data = this.use(data)
+
+    return this
   }
 
 }
