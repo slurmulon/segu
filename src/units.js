@@ -1,3 +1,4 @@
+import { Lens } from './lens'
 import { gcd, clamp, lerp, invlerp } from './math'
 
 export class Units {
@@ -7,22 +8,7 @@ export class Units {
     lens = BYTE_UNIT_LENS
   } = {}) {
     this.map = map
-    this.lens = lens
-    // this.lens = Object.assign({}, UNIT_LENS, lens)
-  }
-
-  scope (value, {
-    is = this.lens.unit,
-    as = this.lens.unit,
-    min = this.lens.min,
-    max = this.lens.max,
-    origin = this.lens.origin
-  } = {}) {
-    const index = this.cast(value - (origin || 0), { is, as })
-    const head = this.cast(min || 0, { is, as })
-    const tail = this.cast(max || value, { is, as })
-
-    return { value, index, head, tail }
+    this.lens = new Lens(lens)
   }
 
   normalize (unit) {
@@ -37,6 +23,16 @@ export class Units {
     }
 
     return 1
+  }
+
+  scope (value, lens) {
+    // const { is, as, min, max, origin } = lens
+    const { is, as, min, max, origin } = this.lens.use(lens)
+    const index = this.cast(value - (origin || 0), { is, as })
+    const head = this.cast(min || 0, { is, as })
+    const tail = this.cast(max || value, { is, as })
+
+    return { value, index, head, tail }
   }
 
   cast (value, { is = this.lens.unit, as = this.lens.unit } = {}) {
