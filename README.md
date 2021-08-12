@@ -94,13 +94,7 @@ A default lens may be provided to the `Units` constructor and you can provide a 
 
 ### Approaches
 
-The example above demonstrates my preferred style since you can simply pass around your units object to things that need it, without additional imports.
-
-It minimizes dependencies and makes performing centralized updates to your units trivial.
-
-It also provides a clear type-hint since both `is` and `as` are specified in each `cast`.
-
-Ultimately, due to the simplicity of the API, you can structure your code basically any way you like.
+Due to the simplicity of the API, you can basically structure your code any way you like.
 
 For instance, if you're mostly converting units to/from `px`, you could either configure a global lense via the `unit` prop (uses value for both `is` and `as` in cast functions):
 
