@@ -15,7 +15,6 @@ export class Lens {
   }
 
   get unit () {
-    // return this.data.unit || 1
     return this.data.unit || this.data.is || 1
   }
 

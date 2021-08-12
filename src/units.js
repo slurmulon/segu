@@ -130,5 +130,3 @@ export class Units {
 }
 
 export const units = props => new Units(props)
-
-export default Units
