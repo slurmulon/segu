@@ -51,7 +51,8 @@ export default [
         sourcemap: true,
         // plugins: [
         //   getBabelOutputPlugin({
-        //     presets: ['@babel/preset-env'],
+        //     // presets: ['@babel/preset-env'],
+        //     presets: [['@babel/preset-env', { modules: false }]],
         //     // presets: [['@babel/preset-env', { modules: 'umd' }]],
         //     // plugins: [['@babel/plugin-transform-runtime', { corejs: 3, useESModules: true }]]
         //   })
