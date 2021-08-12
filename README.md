@@ -20,13 +20,15 @@ Simply provide `segu` with a key/value map of unit constants and you can effortl
 
 There are already mature and robust libraries for performing these calculations and more, such as [`d3-scale`](https://github.com/d3/d3-scale) (**check this out first**).
 
+The problem is that it's often difficult to extract and share calculations between different projects in a unified or consistent way, especially when multiple units are involved (e.g. SVG, `konva` and `threejs`).
+
+This situation can easily result in fragmented and parallel code that's painful to scale or maintain - the good news is that this problem becomes less complicated with the help of `segu`.
+
 `segu` does not aim to replace alternative solutions. It simply takes a different design approach that's focused on flexible and centralized conversions between units, and this may be a great complement to the tools you're already using.
 
-By declaring every related unit in a single object and abstracting most of the math behind semantics, highly consistent and cross-platform solutions can be achieved.
+By declaring every related unit in a single object and abstracting most of the math behind semantics, highly consistent cross-platform solutions can be achieved.
 
 Projects can share common unit maps that are low impact and resilient to future changes. Tools such as JSON Schema can enhance this aspect even further.
-
-Lastly, `segu` elegantly handles values that overflow their context and must be wrapped or scrolled (e.g. a list of items that's wider than the screen, or repeated sections within music).
 
 ## Use Cases
 
