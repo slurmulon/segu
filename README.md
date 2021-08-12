@@ -1,5 +1,5 @@
 # segu
-> :cyclone: Simplified linear unit conversions and transforms
+> :cyclone: Simplified conversions and transforms for linear units.
 ---
 
 ## Intro
@@ -223,10 +223,6 @@ Determines the ratio of a value. Inverse of lerp.
 units.invlerp(12, { min: 0, max: 16 }) // 0.75
 units.invlerp(12, { is: 'gb', as: 'gib', min: 0, max: 30 }) // 0.4
 ```
-
-#### ratio
-#### progress
-#### fold
 
 ## Roadmap
 
