@@ -45,10 +45,13 @@ export default [
       {
         file: pkg.module,
         format: 'esm',
-        plugins: [getBabelOutputPlugin({
-          presets: [['@babel/preset-env', { modules: 'umd' }]],
-          // plugins: [['@babel/plugin-transform-runtime', { corejs: 3, useESModules: true }]]
-        })]
+        exports: 'named',
+        plugins: [
+          getBabelOutputPlugin({
+            presets: [['@babel/preset-env', { modules: 'umd' }]],
+            // plugins: [['@babel/plugin-transform-runtime', { corejs: 3, useESModules: true }]]
+          })
+        ]
       }
     ],
     plugins: [
