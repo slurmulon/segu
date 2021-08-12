@@ -4,16 +4,16 @@
 
 ## Intro
 
-`segu` is a tiny yet powerful math library for working with continuous linear values across multiple units.
+`segu` is a tiny yet effective math library for working with continuous linear values across multiple units.
 
-Simply provide `segu` with a key/value map of unit constants and you can effortlessly convert your values between any unit.
+Simply provide `segu` with a key/value map of unit constants and you can effortlessly convert values between any unit.
 
 `segu` also provides some essential calculations for linear interpolation, transformation, etc.
 
 ## Features
 
- - Effortlessly convert between continous linear units
- - Define global unit conversions or provide them on a local per-case basis
+ - Convert between continous linear values using semantic units
+ - Define global unit conversions or provide them on a local basis
  - Snap values to a generic grid
  - Cycle/wrap values between units within a range
  - Maintain absolute sizes and proportions of visual elements across devices
@@ -223,15 +223,6 @@ Determines the ratio of a value. Inverse of lerp.
 units.invlerp(12, { min: 0, max: 16 }) // 0.75
 units.invlerp(12, { is: 'gb', as: 'gib', min: 0, max: 30 }) // 0.4
 ```
-
-## Roadmap
-
-- [ ] Scaling functions
-  * [ ] Quantitative
-  * [ ] Discrete
-  * [ ] Discretizing
-- [ ] Domain/range mappings
-- [ ] `quantize`
 
 ## License
 
