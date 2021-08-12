@@ -3,7 +3,6 @@
   "version": "1.0.0-alpha.0",
   "description": "Simplified conversions and transforms for linear units.",
   "main": "dist/bundle.js",
-  "module": "src/index.js",
   "scripts": {
     "build": "rollup -c",
     "test": "jest"
