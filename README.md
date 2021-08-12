@@ -228,20 +228,6 @@ units.invlerp(12, { is: 'gb', as: 'gib', min: 0, max: 30 }) // 0.4
 #### progress
 #### fold
 
-## Rationale
-
-`segu`'s interface arose out of several projects I was working on related to music.
-
-I needed a clean, centralized way to convert between beat units, milliseconds, pixels, SI units and more.
-
-Because I was using similar logic in WebGL, SVG and HTML, I also needed a solution that was generic and consistent across various domains.
-
-The solution I created ended up being very useful; I was able to effortlessly convert between units and supported every common operation I needed, regardless of where I was using them.
-
-It also paired cleanly with other tools I was already using, such as `d3` and `threejs`.
-
-`segu` is the condensed and packaged version of this work that I wish to share with others.
-
 ## Roadmap
 
 - [ ] Scaling functions
@@ -250,3 +236,9 @@ It also paired cleanly with other tools I was already using, such as `d3` and `t
   * [ ] Discretizing
 - [ ] Domain/range mappings
 - [ ] `quantize`
+
+## License
+
+Copyright &copy; Erik Vavro. All rights reserved.
+
+Licensed under the [MIT License](https://opensource.org/licenses/MIT).
