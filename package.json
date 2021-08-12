@@ -2,7 +2,8 @@
   "name": "segu",
   "version": "1.0.0",
   "description": "Simplified linear unit conversions and transforms",
-  "main": "src/index.js",
+  "main": "dist/bundle.js",
+  "module": "src/index.js",
   "scripts": {
     "build": "rollup -c",
     "test": "jest"
