@@ -37,26 +37,34 @@ export default [
       {
         file: pkg.main,
         format: 'cjs',
-        plugins: [getBabelOutputPlugin({
-          presets: ['@babel/preset-env'],
-          // plugins: [['@babel/plugin-transform-runtime', { corejs: 3, useESModules: false }]]
-        })]
+        exports: 'named',
+        sourcemap: true,
+        // plugins: [getBabelOutputPlugin({
+        //   presets: ['@babel/preset-env'],
+        //   // plugins: [['@babel/plugin-transform-runtime', { corejs: 3, useESModules: false }]]
+        // })]
       },
       {
         file: pkg.module,
         format: 'esm',
         exports: 'named',
-        plugins: [
-          getBabelOutputPlugin({
-            presets: [['@babel/preset-env', { modules: 'umd' }]],
-            // plugins: [['@babel/plugin-transform-runtime', { corejs: 3, useESModules: true }]]
-          })
-        ]
+        sourcemap: true,
+        // plugins: [
+        //   getBabelOutputPlugin({
+        //     presets: ['@babel/preset-env'],
+        //     // presets: [['@babel/preset-env', { modules: 'umd' }]],
+        //     // plugins: [['@babel/plugin-transform-runtime', { corejs: 3, useESModules: true }]]
+        //   })
+        // ]
       }
     ],
     plugins: [
       json(),
-      resolve()
+      resolve(),
+      // commonjs({
+      //   esmExternals: true,
+      //   requireReturnsDefault: true
+      // }),
     ]
   }
 ]

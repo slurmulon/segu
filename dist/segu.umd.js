@@ -79,7 +79,6 @@
     _createClass(Lens, [{
       key: "unit",
       get: function get() {
-        // return this.data.unit || 1
         return this.data.unit || this.data.is || 1;
       }
     }, {
