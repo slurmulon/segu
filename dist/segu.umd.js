@@ -21,6 +21,7 @@
   _exports.gcd = gcd;
   _exports.invlerp = _invlerp;
   _exports.lerp = _lerp;
+  _exports.project = project;
   _exports.steps = steps;
   _exports.units = _exports.Units = void 0;
 
@@ -193,6 +194,22 @@
     return (value >= x ? value : value + y) % y;
   }
   /**
+   * Projects a value given a source domain (from) to a target domain (to).
+   * Domains are provided as range tuples ([min, max]).
+   *
+   * @param {Number} value
+   * @param {Array<Number>} from
+   * @param {Array<Number>} to
+   * @returns {Number}
+   */
+
+
+  function project(value) {
+    var from = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [0, 0];
+    var to = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [0, 0];
+    return (value - from[0]) / (from[1] - from[0]) * (to[1] - to[0]) + to[0];
+  }
+  /**
    * Determines the element found in an array at a given ratio
    *
    * @param {Float} ratio
@@ -204,7 +221,8 @@
     ratio %= 1;
     if (ratio < 0) ratio += 1;
     return all[Math.floor(ratio * all.length)];
-  }
+  } // TODO: Support calc method for allowing conversion of units via string (like CSS):
+
 
   var Units = /*#__PURE__*/function () {
     function Units() {
@@ -229,7 +247,7 @@
 
         if (typeof unit === 'string') {
           var value = this.map[unit] || 1;
-          return typeof value === 'function' ? value(unit) : Number(value);
+          return typeof value === 'function' ? value(unit, this) : Number(value);
         }
 
         return 1;
@@ -265,7 +283,8 @@
           head: head,
           tail: tail
         };
-      }
+      } // TODO: Allow `is` and `as` to be provided as mapping functions
+
     }, {
       key: "cast",
       value: function cast() {
@@ -277,81 +296,74 @@
             _ref3$as = _ref3.as,
             as = _ref3$as === void 0 ? this.lens.unit : _ref3$as;
 
-        // cast (value = 1, { is = this.lens.is, as = this.lens.as } = {}) {
         return this.normalize(value) / (this.normalize(as) / this.normalize(is));
       }
     }, {
       key: "snap",
-      value: function snap() {
-        var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      value: function snap(value) {
+        var lens = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.lens;
 
-        var _ref4 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-            _ref4$to = _ref4.to,
-            to = _ref4$to === void 0 ? this.lens.unit : _ref4$to,
-            _ref4$calc = _ref4.calc,
-            calc = _ref4$calc === void 0 ? Math.floor : _ref4$calc;
+        var _this$scope = this.scope(value, lens),
+            index = _this$scope.index;
 
-        var unit = this.normalize(to);
-        var adjust = typeof calc === 'function' ? calc : function (_) {
-          return _;
-        };
-        var output = adjust(value / unit) * unit;
-        return this.normalize(output || 0);
+        var unit = this.normalize(lens.as || lens.unit);
+        var calc = typeof lens.calc === 'function' ? lens.calc : Math.floor;
+        return calc(index) * unit;
       }
     }, {
       key: "clamp",
       value: function clamp(value, lens) {
-        var _this$scope = this.scope(value, lens),
-            index = _this$scope.index,
-            head = _this$scope.head,
-            tail = _this$scope.tail;
+        var _this$scope2 = this.scope(value, lens),
+            index = _this$scope2.index,
+            head = _this$scope2.head,
+            tail = _this$scope2.tail;
 
         return _clamp(index, head, tail);
       }
     }, {
       key: "cyclic",
       value: function cyclic(value, lens) {
-        var _this$scope2 = this.scope(value, lens),
-            index = _this$scope2.index,
-            head = _this$scope2.head,
-            tail = _this$scope2.tail;
+        var _this$scope3 = this.scope(value, lens),
+            index = _this$scope3.index,
+            head = _this$scope3.head,
+            tail = _this$scope3.tail;
 
         return _cyclic(index, head, tail);
       }
     }, {
       key: "lerp",
       value: function lerp(ratio, lens) {
-        var _this$scope3 = this.scope(0, lens),
-            head = _this$scope3.head,
-            tail = _this$scope3.tail;
+        var _this$scope4 = this.scope(0, lens),
+            head = _this$scope4.head,
+            tail = _this$scope4.tail;
 
         return _lerp(ratio, head, tail);
       }
     }, {
       key: "invlerp",
       value: function invlerp(value, lens) {
-        var _this$scope4 = this.scope(value, lens),
-            index = _this$scope4.index,
-            head = _this$scope4.head,
-            tail = _this$scope4.tail;
+        var _this$scope5 = this.scope(value, lens),
+            index = _this$scope5.index,
+            head = _this$scope5.head,
+            tail = _this$scope5.tail;
 
         return _invlerp(index, head, tail);
       }
     }, {
       key: "delta",
       value: function delta(value, lens) {
-        var _this$scope5 = this.scope(value, lens),
-            index = _this$scope5.index,
-            head = _this$scope5.head;
+        var _this$scope6 = this.scope(value, lens),
+            index = _this$scope6.index,
+            head = _this$scope6.head;
 
         return index - head;
       }
     }, {
       key: "range",
       value: function range(value, lens) {
-        var _this$scope6 = this.scope(value, lens),
-            head = _this$scope6.head,
-            tail = _this$scope6.tail;
+        var _this$scope7 = this.scope(value, lens),
+            head = _this$scope7.head,
+            tail = _this$scope7.tail;
 
         return tail - head;
       }
@@ -370,12 +382,12 @@
         var basis = gcd(value, grid);
         var size = this.clamp(value, lens);
         var container = this.snap(size, {
-          to: basis
+          as: basis
         });
         var ratio = Math.max(1, Math.min(value / basis, grid));
         var min = value >= grid ? grid : basis;
         return Math.max(min, this.snap(container, {
-          to: ratio
+          as: ratio
         }));
       } // Changes the base unit to the provided key by recalculating and replacing the unit map pairs.
       // TODO: Test, and ensure that the base unit is equal to 1 (or, could just use scale)
@@ -387,10 +399,10 @@
 
         var unit = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.lens.unit;
         if (unit === this.lens.unit) return this;
-        var map = Object.entries(this.map).reduce(function (map, _ref5) {
-          var _ref6 = _slicedToArray(_ref5, 2),
-              key = _ref6[0],
-              value = _ref6[1];
+        var map = Object.entries(this.map).reduce(function (map, _ref4) {
+          var _ref5 = _slicedToArray(_ref4, 2),
+              key = _ref5[0],
+              value = _ref5[1];
 
           return Object.assign(map, _defineProperty({}, key, _this.cast(value, {
             is: _this.lens.is,

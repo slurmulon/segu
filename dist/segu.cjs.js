@@ -119,6 +119,19 @@ function cyclic (value, x, y) {
 }
 
 /**
+ * Projects a value given a source domain (from) to a target domain (to).
+ * Domains are provided as range tuples ([min, max]).
+ *
+ * @param {Number} value
+ * @param {Array<Number>} from
+ * @param {Array<Number>} to
+ * @returns {Number}
+ */
+function project (value, from = [0, 0], to = [0, 0]) {
+  return (value - from[0]) / (from[1] - from[0]) * (to[1] - to[0]) + to[0]
+}
+
+/**
  * Determines the element found in an array at a given ratio
  *
  * @param {Float} ratio
@@ -131,6 +144,8 @@ function steps (ratio, all) {
 
   return all[Math.floor(ratio * all.length)]
 }
+
+// TODO: Support calc method for allowing conversion of units via string (like CSS):
 
 class Units {
 
@@ -150,7 +165,7 @@ class Units {
     if (typeof unit === 'string') {
       const value = this.map[unit] || 1;
 
-      return typeof value === 'function' ? value(unit) : Number(value)
+      return typeof value === 'function' ? value(unit, this) : Number(value)
     }
 
     return 1
@@ -165,17 +180,17 @@ class Units {
     return { value, index, head, tail }
   }
 
+  // TODO: Allow `is` and `as` to be provided as mapping functions
   cast (value = 1, { is = this.lens.unit, as = this.lens.unit } = {}) {
-  // cast (value = 1, { is = this.lens.is, as = this.lens.as } = {}) {
     return this.normalize(value) / (this.normalize(as) / this.normalize(is))
   }
 
-  snap (value = 1, { to = this.lens.unit, calc = Math.floor } = {}) {
-    const unit = this.normalize(to);
-    const adjust = typeof calc === 'function' ? calc : _ => _;
-    const output = adjust(value / unit) * unit;
+  snap (value, lens = this.lens) {
+    const { index } = this.scope(value, lens);
+    const unit = this.normalize(lens.as || lens.unit);
+    const calc = typeof lens.calc === 'function' ? lens.calc : Math.floor;
 
-    return this.normalize(output || 0)
+    return calc(index) * unit
   }
 
   clamp (value, lens) {
@@ -225,11 +240,11 @@ class Units {
     const grid = lens.grid || 1;
     const basis = gcd(value, grid);
     const size = this.clamp(value, lens);
-    const container = this.snap(size, { to: basis });
+    const container = this.snap(size, { as: basis });
     const ratio = Math.max(1, Math.min(value / basis, grid));
     const min = value >= grid ? grid : basis;
 
-    return Math.max(min, this.snap(container, { to: ratio }))
+    return Math.max(min, this.snap(container, { as: ratio }))
   }
 
   // Changes the base unit to the provided key by recalculating and replacing the unit map pairs.
@@ -268,6 +283,7 @@ exports.cyclic = cyclic;
 exports.gcd = gcd;
 exports.invlerp = invlerp;
 exports.lerp = lerp;
+exports.project = project;
 exports.steps = steps;
 exports.units = units;
 //# sourceMappingURL=segu.cjs.js.map
