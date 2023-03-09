@@ -1,3 +1,6 @@
+// TODO: Support calc method for allowing conversion of units via string (like CSS):
+//  - e.g. calc(1mile - 500px)
+
 import { Lens } from './lens'
 import { gcd, cyclic, clamp, lerp, invlerp } from './math'
 
@@ -19,7 +22,7 @@ export class Units {
     if (typeof unit === 'string') {
       const value = this.map[unit] || 1
 
-      return typeof value === 'function' ? value(unit) : Number(value)
+      return typeof value === 'function' ? value(unit, this) : Number(value)
     }
 
     return 1
@@ -39,12 +42,12 @@ export class Units {
     return this.normalize(value) / (this.normalize(as) / this.normalize(is))
   }
 
-  snap (value = 1, { to = this.lens.unit, calc = Math.floor } = {}) {
-    const unit = this.normalize(to)
-    const adjust = typeof calc === 'function' ? calc : _ => _
-    const output = adjust(value / unit) * unit
+  snap (value, lens = this.lens) {
+    const { index } = this.scope(value, lens)
+    const unit = this.normalize(lens.as || lens.unit)
+    const calc = typeof lens.calc === 'function' ? lens.calc : Math.floor
 
-    return this.normalize(output || 0)
+    return calc(index) * unit
   }
 
   clamp (value, lens) {
@@ -94,11 +97,11 @@ export class Units {
     const grid = lens.grid || 1
     const basis = gcd(value, grid)
     const size = this.clamp(value, lens)
-    const container = this.snap(size, { to: basis })
+    const container = this.snap(size, { as: basis })
     const ratio = Math.max(1, Math.min(value / basis, grid))
     const min = value >= grid ? grid : basis
 
-    return Math.max(min, this.snap(container, { to: ratio }))
+    return Math.max(min, this.snap(container, { as: ratio }))
   }
 
   // Changes the base unit to the provided key by recalculating and replacing the unit map pairs.
