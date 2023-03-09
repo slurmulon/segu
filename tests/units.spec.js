@@ -54,37 +54,37 @@ describe('cast', () => {
 describe('snap', () => {
   describe('calc', () => {
     it('floor (default)', () => {
-      const result = units.snap(1500, { to: 'kib' })
+      const result = units.snap(1500, { as: 'kib' })
 
       expect(result).toBe(1024)
     })
 
     it('floor (zero)', () => {
-      const result = units.snap(1000, { to: 'kib' })
+      const result = units.snap(1000, { as: 'kib' })
 
       expect(result).toBe(0)
     })
 
     it('ceil', () => {
-      const result = units.snap(1500, { to: 'kib', calc: Math.ceil })
+      const result = units.snap(1500, { as: 'kib', calc: Math.ceil })
 
       expect(result).toBe(2048)
     })
 
     it('round (down)', () => {
-      const result = units.snap(1500, { to: 'kib', calc: Math.round })
+      const result = units.snap(1500, { as: 'kib', calc: Math.round })
 
       expect(result).toBe(1024)
     })
 
     it('round (up)', () => {
-      const result = units.snap(1984, { to: 'kib', calc: Math.round })
+      const result = units.snap(1984, { as: 'kib', calc: Math.round })
 
       expect(result).toBe(2048)
     })
 
     it('custom', () => {
-      const result = units.snap(2048, { to: 'kib', calc: x => x * 2 })
+      const result = units.snap(2048, { as: 'kib', calc: x => x * 2 })
 
       expect(result).toBe(4096)
     })
