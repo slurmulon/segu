@@ -1,6 +1,6 @@
 {
   "name": "segu",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "Simplified conversions and transforms for linear units.",
   "main": "dist/segu.cjs.js",
   "module": "dist/segu.esm.js",
