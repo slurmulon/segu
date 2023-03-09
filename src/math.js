@@ -59,6 +59,19 @@ export function cyclic (value, x, y) {
 }
 
 /**
+ * Projects a value given a source domain (from) to a target domain (to).
+ * Domains are provided as range tuples ([min, max]).
+ *
+ * @param {Number} value
+ * @param {Array<Number>} from
+ * @param {Array<Number>} to
+ * @returns {Number}
+ */
+export function project (value, from = [0, 0], to = [0, 0]) {
+  return (value - from[0]) / (from[1] - from[0]) * (to[1] - to[0]) + to[0]
+}
+
+/**
  * Determines the element found in an array at a given ratio
  *
  * @param {Float} ratio
